@@ -1,46 +1,21 @@
 <?php
-session_start();
+require_once 'config.php';
 include 'header.php';
 
+$cart = $_SESSION['cart'] ?? [];
 $total = 0;
-$cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
-
-foreach ($cart as $item) {
-    $total += $item['price'] * $item['quantity'];
-}
+foreach ($cart as $item) { $total += $item['price'] * $item['quantity']; }
 ?>
 
-<div class="container">
-    <h2>Finaliser ma commande</h2>
-    
-    <h3>Récapitulatif</h3>
-    <table>
-        <tr>
-            <th>Produit</th>
-            <th>Quantité</th>
-            <th>Prix unitaire</th>
-            <th>Sous-total</th>
-        </tr>
-        <?php foreach ($cart as $item): ?>
-        <tr>
-            <td><?= htmlspecialchars($item['name']) ?></td>
-            <td><?= $item['quantity'] ?></td>
-            <td><?= number_format($item['price'], 2) ?> €</td>
-            <td><?= number_format($item['price'] * $item['quantity'], 2) ?> €</td>
-        </tr>
-        <?php endforeach; ?>
-        <tr>
-            <td colspan="3"><strong>Total Général</strong></td>
-            <td><strong><?= number_format($total, 2) ?> €</strong></td>
-        </tr>
-    </table>
-
-    <h3>Informations de livraison</h3>
+<div class="container mt-4">
+    <h2>Détails de la livraison</h2>
     <form action="process_order.php" method="POST">
-        <input type="text" name="customer_name" placeholder="Nom complet" required>
-        <input type="email" name="customer_email" placeholder="Email" required>
-        <textarea name="delivery_address" placeholder="Adresse de livraison" required></textarea>
-        <button type="submit">Valider la commande</button>
-        <a href="cart.php">Retour au panier</a>
+        <input type="text" name="customer_name" placeholder="Nom Complet" class="form-control mb-2" required>
+        <input type="email" name="customer_email" placeholder="Email" class="form-control mb-2" required>
+        <textarea name="delivery_address" placeholder="Adresse" class="form-control mb-2" required></textarea>
+        <h4>Total : <?= number_format($total, 2) ?> €</h4>
+        <button type="submit" class="btn btn-primary">Payer la commande</button>
     </form>
 </div>
+
+<?php include 'footer.php'; ?>
